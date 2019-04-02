@@ -14,7 +14,9 @@ using Microsoft.EntityFrameworkCore;
 //using Microsoft.AspNetCore.SqlLite;
 
 using ProfileApp.API.Data;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ProfileApp.API
 {
@@ -34,6 +36,14 @@ namespace ProfileApp.API
             services.AddDbContext<DataContext>(x=>x.UseSqlite(this.Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
             services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(Options=>{
+                Options.TokenValidationParameters=new Microsoft.IdentityModel.Tokens.TokenValidationParameters{
+                    ValidateIssuerSigningKey=true,
+                    IssuerSigningKey=new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                    ValidateIssuer=false,
+                    ValidateAudience=false
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,6 +60,7 @@ namespace ProfileApp.API
 
             //app.UseHttpsRedirection();
             app.UseCors(x=>x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

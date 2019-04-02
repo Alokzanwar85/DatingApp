@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProfileApp.API.Data;
 
 namespace ProfileApp.API.Controllers
 {
+    [Authorize()]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -20,6 +22,7 @@ namespace ProfileApp.API.Controllers
             DataContext = dataContext;
         }
         // GET api/values
+        
         [HttpGet]
         public async Task<IActionResult> GetValuesAsync()
         {
@@ -27,8 +30,9 @@ namespace ProfileApp.API.Controllers
             return Ok(values);
         }
 
-        // GET api/values/5
+        
         [HttpGet("{id}")]
+        [AllowAnonymous()]
         public async Task<IActionResult> GetValueAsync(int id)
         {
             try{
