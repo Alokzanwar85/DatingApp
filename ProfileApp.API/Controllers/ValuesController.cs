@@ -24,6 +24,7 @@ namespace ProfileApp.API.Controllers
         // GET api/values
         
         [HttpGet]
+        [AllowAnonymous()]
         public async Task<IActionResult> GetValuesAsync()
         {
             var values=await DataContext.Values.ToListAsync();

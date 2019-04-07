@@ -7,7 +7,8 @@ namespace ProfileApp.API.Dtos
         [Required]
         public string UserName { get; set; }
         [Required]
-        [StringLength(5,MinimumLength=1,ErrorMessage="Please Provide Password")]
         public string Password { get; set; }
+        
+        
     }
 }

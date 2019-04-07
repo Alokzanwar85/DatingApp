@@ -25,11 +25,11 @@ namespace ProfileApp.API.Controllers
             
         }
 
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(UserforRegisterDto userforregisterdto)
         {
             userforregisterdto.UserName = userforregisterdto.UserName.ToLower();
-
+            
             if (await _repo.UserExist(userforregisterdto.UserName))
                 return BadRequest("User Already Exist");
 
