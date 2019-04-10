@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { AuthService } from '_services/AuthService';
+import { ErrorIntercetorService } from '_services/error.intercetor.service';
 
 
 @Component({
@@ -12,7 +13,7 @@ export class RegisterComponent implements OnInit {
   model: any = {};
   @Input() valuesFromHome: any = {};
   @Output() cancelRegister = new EventEmitter();
-  constructor(private auth: AuthService) { }
+  constructor(private auth: AuthService, private errors: ErrorIntercetorService) { }
 
   ngOnInit() {
   }
