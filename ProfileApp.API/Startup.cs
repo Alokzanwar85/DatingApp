@@ -17,6 +17,8 @@ using ProfileApp.API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ProfileApp.API.Helper;
+using AutoMapper;
 
 namespace ProfileApp.API
 {
@@ -32,10 +34,17 @@ namespace ProfileApp.API
         // This method gets called by the runtime. Use this method toet add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            .AddJsonOptions(opt =>{
+                opt.SerializerSettings.ReferenceLoopHandling=Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
             services.AddDbContext<DataContext>(x=>x.UseSqlite(this.Configuration.GetConnectionString("DefaultConnection")));
             services.AddCors();
             services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddScoped<IUserrepository,UserRepository>();
+            services.AddTransient<Seed>();
+            //services.AddTransient<AutoMapperHelper>();
+            services.AddAutoMapper();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(Options=>{
                 Options.TokenValidationParameters=new Microsoft.IdentityModel.Tokens.TokenValidationParameters{
                     ValidateIssuerSigningKey=true,
@@ -47,7 +56,7 @@ namespace ProfileApp.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env,Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -57,7 +66,7 @@ namespace ProfileApp.API
             {
                 //app.UseHsts();
             }
-
+            //seeder.SeedUser();
             //app.UseHttpsRedirection();
             app.UseCors(x=>x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
